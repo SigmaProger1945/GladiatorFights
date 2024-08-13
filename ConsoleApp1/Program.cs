@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+using System.Threading;
 
 namespace ConsoleApp1
 {
@@ -16,6 +9,24 @@ namespace ConsoleApp1
             bool arenaWork = true;
             int money = 100;
             Random rand = new Random();
+            
+            static int InputVerifier(int UserInput)
+            {
+                while(true)
+                {
+                    try 
+                    {
+                        UserInput = Convert.ToInt32(Console.ReadLine());
+                        return UserInput;
+                    }
+                    catch (Exception)
+                    {
+                        System.Console.WriteLine("Wrong input.");
+                        Thread.Sleep(2000);
+                        Console.Write("Try again: ");
+                    }
+                }
+            }
 
             String[] names = {"Leon", "Obama", "Sigma", "Gigachad", "Spartak", "Tyler"};
             
@@ -39,18 +50,20 @@ namespace ConsoleApp1
                 }
                 Console.WriteLine();
 
-                Console.WriteLine("Choose the warrior by his index - 1\nCreate your own warrior - 2 ");
+                Console.WriteLine("Choose the warrior by his index - 1\nCreate your own warrior - 2\nLeave the Colliseum - 3");
                 Console.Write("Choose an option: ");
-                int UserChoice = Convert.ToInt32(Console.ReadLine());
+                int UserChoice = InputVerifier(UserChoice = 0);
                 int warriorChoice;
                 switch (UserChoice)
                 {
                     case 1:
-                        Console.Write("Choose 1 of the warriors from above: ");
-                        int warriorChoiceCase = Convert.ToInt32(Console.ReadLine());
+                        Console.Write("Choose 1 of the warriors from above: ");   
+                        int warriorChoiceCase = InputVerifier(warriorChoiceCase = 0);
                         while (warriorChoiceCase <= 0 || warriorChoiceCase > warriors.Count)
                         {
-                            Console.WriteLine("Youre out of range of warriors, enter again:");
+                            Console.WriteLine("Youre out of range of warriors.");
+                            Thread.Sleep(2000);
+                            Console.Write("Enter again:");
                             warriorChoiceCase = Convert.ToInt32(Console.ReadLine());
                         }
                         warriorChoiceCase -= 1;
@@ -61,15 +74,16 @@ namespace ConsoleApp1
                         Console.Write("You're creating a new warrior.\nEnter warrior name:");
                         string warriorName = Console.ReadLine();
                         Console.Write("Enter warrior's health:");
-                        int warriorHP = Convert.ToInt32(Console.ReadLine());
+                        int warriorHP = InputVerifier(warriorHP = 0);
                         Console.Write("Enter warrior's armor:");
-                        int warriorARM = Convert.ToInt32(Console.ReadLine());
+                        int warriorARM = InputVerifier(warriorARM = 0);
                         Console.Write("Enter warrior's damage:");
-                        int warriorDMG = Convert.ToInt32(Console.ReadLine());
+                        int warriorDMG = InputVerifier(warriorDMG = 0);
                         
                         if( warriorHP + warriorARM + warriorDMG > 1000)
                         {
                             System.Console.WriteLine("Your warrior is too powerful, create weaker warrior");
+                            Thread.Sleep(2000);
                             goto case 2;
 
                         }
@@ -78,6 +92,13 @@ namespace ConsoleApp1
                         warriorChoiceCase = warriors.Count - 1;
                         warriorChoice = warriorChoiceCase;
                         break;
+                    case 3:
+                    {
+                        System.Console.WriteLine("See you next time!");
+                        arenaWork = false;
+                        continue;
+
+                    }
 
                     default:
                         Console.Write("Wrong choice, redirecting to case 1...");
@@ -89,7 +110,7 @@ namespace ConsoleApp1
                 int enemy = rand.Next(0, warriors.Count - 1);
                 while (enemy == warriorChoice) { enemy = rand.Next(0, warriors.Count - 1); }
                 System.Console.Write("How many money do you want to bet on your warrior? ");
-                int bet = Convert.ToInt32(Console.ReadLine());
+                int bet = InputVerifier(bet = 0);
                 while (bet <= 0 || bet > money)
                 {
                     System.Console.WriteLine("Wrong bet, try again:");
@@ -146,7 +167,10 @@ namespace ConsoleApp1
 
                 Console.ReadKey(true);
                 Console.Clear();
-            }    
+            }  
+            System.Console.WriteLine();  
+            System.Console.WriteLine("Press anything to close console...");
+            Console.ReadKey();
         }
     }
 
